@@ -1,0 +1,3 @@
+# Ignoramos el ./algogram/target/ y el ./algogram/Cargo.lock ya que son archivos generados por cargo y no son necesarios para el control de versiones
+algogram/target/
+algogram/Cargo.lock
