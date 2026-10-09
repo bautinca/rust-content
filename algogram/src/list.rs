@@ -7,8 +7,8 @@ struct Node<T> {
 }
 
 pub struct List<T> {
-    pub primero: Option<Box<Node<T>>>, // El head es un puntero al primer nodo de la lista
-    pub largo: usize;
+    primero: Option<Box<Node<T>>>, // El head es un puntero al primer nodo de la lista
+    pub largo: usize,
 }
 
 impl <T> List<T> {
@@ -192,5 +192,86 @@ impl <T> List<T> {
 
     self.largo += 1;
     true
+  }
+}
+
+// ---------------- TESTS UNITARIOS ----------------
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn crear_lista_vacia() {
+    let lista: List<i32> = List::nueva();
+    assert!(lista.esta_vacia());
+    assert_eq!(lista.largo(), 0);
+  }
+
+  #[test]
+  fn insertar_inicio_lista() {
+    let mut lista: List<i32> = List::nueva();
+    lista.insertar_inicio(1);
+    assert!(!lista.esta_vacia());
+    assert_eq!(lista.largo(), 1);
+    assert_eq!(lista.ver_primero(), Some(&1));
+    assert_eq!(lista.ver_ultimo(), Some(&1));
+  }
+
+  #[test]
+  fn insertar_final_lista() {
+    let mut lista: List<i32> = List::nueva();
+    lista.insertar_final(1);
+    assert!(!lista.esta_vacia());
+    assert_eq!(lista.largo(), 1);
+    assert_eq!(lista.ver_primero(), Some(&1));
+    assert_eq!(lista.ver_ultimo(), Some(&1));
+  }
+
+  #[test]
+  fn insertar_multiples_lista() {
+    let mut lista: List<i32> = List::nueva();
+    for i in 0..100 {
+      lista.insertar_final(i);
+    }
+    assert_eq!(lista.largo(), 100);
+    assert_eq!(lista.ver_primero(), Some(&0));
+    assert_eq!(lista.ver_ultimo(), Some(&99));
+  }
+
+  #[test]
+  fn borrar_primero_lista() {
+    let mut lista: List<i32> = List::nueva();
+    lista.insertar_final(1);
+    lista.insertar_final(2);
+    assert_eq!(lista.borrar_primero(), Some(1));
+    assert_eq!(lista.largo(), 1);
+    assert_eq!(lista.ver_primero(), Some(&2));
+    lista.borrar_primero();
+    assert!(lista.esta_vacia());
+  }
+
+  #[test]
+  fn borrar_en_lista() {
+    let mut lista: List<i32> = List::nueva();
+    lista.insertar_final(1);
+    lista.insertar_final(2);
+    lista.insertar_final(3);
+    assert_eq!(lista.borrar_en(1), Some(2));
+    assert_eq!(lista.largo(), 2);
+    assert_eq!(lista.ver_primero(), Some(&1));
+    assert_eq!(lista.ver_ultimo(), Some(&3));
+  }
+
+  #[test]
+  fn insertar_en_lista() {
+    let mut lista: List<i32> = List::nueva();
+    lista.insertar_final(1);
+    lista.insertar_final(3);
+    assert!(lista.insertar_en(1, 2));
+    assert_eq!(lista.largo(), 3);
+    assert_eq!(lista.ver_primero(), Some(&1));
+    assert_eq!(lista.ver_ultimo(), Some(&3));
+    assert_eq!(lista.obtener(1), Some(&2));
   }
 }

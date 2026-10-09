@@ -86,5 +86,56 @@ impl<T> Cola<T> {
   }
 }
 
+// ---------------- TESTS UNITARIOS ----------------
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn crear_cola_vacia() {
+    let cola: Cola<i32> = Cola::nueva();
+    assert!(cola.esta_vacia());
+    assert_eq!(cola.largo(), 0);
+  }
+
+  #[test]
+  fn encolar_cola() {
+    let mut cola: Cola<i32> = Cola::nueva();
+    cola.encolar(1);
+    assert!(!cola.esta_vacia());
+    assert_eq!(cola.largo(), 1);
+    assert_eq!(cola.ver_primero(), Some(&1));
+  }
+
+  #[test]
+  fn encolar_multiples_cola() {
+    let mut cola: Cola<i32> = Cola::nueva();
+    cola.encolar(1);
+    cola.encolar(2);
+    cola.encolar(3);
+    assert_eq!(cola.largo(), 3);
+    assert_eq!(cola.ver_primero(), Some(&1));
+  }
+
+  #[test]
+  fn desencolar_cola() {
+    let mut cola: Cola<i32> = Cola::nueva();
+    cola.encolar(1);
+    cola.encolar(2);
+    assert_eq!(cola.desencolar(), Some(1));
+    assert_eq!(cola.largo(), 1);
+    assert_eq!(cola.ver_primero(), Some(&2));
+    cola.desencolar();
+    assert!(cola.esta_vacia());
+  }
+
+  #[test]
+  fn desencolar_cola_vacia() {
+    let mut cola: Cola<i32> = Cola::nueva();
+    assert_eq!(cola.desencolar(), None);
+  }
+}
+
 
 

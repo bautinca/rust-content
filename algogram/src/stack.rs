@@ -88,3 +88,54 @@ impl<T> Stack<T> {
   }
 }
 
+// ---------------- TESTS UNITARIOS ----------------
+#[cfg(test)] // Indicamos que este modulo se tendra en cuenta al correr los tests
+mod tests {
+  use super::*;
+
+  #[test]
+  fn crear_stack_vacio() {
+    let stack: Stack<i32> = Stack::crear();
+    assert!(stack.esta_vacia());
+    assert_eq!(stack.cantidad(), 0);
+    assert_eq!(stack.capacidad(), CAPACIDAD_INICIAL);
+  }
+
+  #[test]
+  fn apilar_stack() {
+    let mut stack: Stack<i32> = Stack::crear();
+    assert!(stack.apilar(1));
+    assert!(!stack.esta_vacia());
+    assert_eq!(stack.cantidad(), 1);
+    assert_eq!(stack.tope(), Some(&1));
+  }
+
+  #[test]
+  fn apilar_multiples_stack() {
+    let mut stack: Stack<i32> = Stack::crear();
+    for i in 0..100 {
+      assert!(stack.apilar(i));
+    }
+
+    // Apilamos uno mas para que la capacidad se redimensione a 200
+    assert!(stack.apilar(100));
+
+    assert_eq!(stack.cantidad(), 101);
+    assert_eq!(stack.capacidad(), 200); // La capacidad se redimensiona a 200
+    assert_eq!(stack.tope(), Some(&100));
+  }
+
+  #[test]
+  fn desapilar_stack() {
+    let mut stack: Stack<i32> = Stack::crear();
+    stack.apilar(1);
+    stack.apilar(2);
+    stack.apilar(3);
+    assert_eq!(stack.desapilar(), Some(3));
+    assert_eq!(stack.desapilar(), Some(2));
+    assert_eq!(stack.desapilar(), Some(1));
+    assert_eq!(stack.desapilar(), None);
+    assert!(stack.esta_vacia());
+    assert_eq!(stack.cantidad(), 0);
+  }
+}
