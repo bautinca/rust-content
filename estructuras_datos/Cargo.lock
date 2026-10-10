@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "algogram"
+name = "estructuras_datos"
 version = "0.1.0"
