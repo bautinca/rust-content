@@ -1,1 +1,3 @@
-Aca crearemos un servidor web HTTP singlethread para facilitar las cosas.
+Aca crearemos un servidor web HTTP singlethread para facilitar las cosas. El servidor web unicamente respondera a solicitudes GET a la ruta raiz ("/") con un archivo HTML simple. Cualquier otra solicitud sera respondida con un mensaje de error 404.
+
+No hay una buen diseño en codigo ya que todo se encuentra en un solo archivo *main.rs* y no hay modulos ni funciones separadas. Esto es intencional para mantener el ejemplo simple y enfocado en la funcionalidad basica de un servidor web HTTP.
