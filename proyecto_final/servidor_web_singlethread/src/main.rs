@@ -27,7 +27,7 @@ fn handle_connection(mut stream: TcpStream) { // Recibe un TcpStream mutable. Es
 
                               // Para este servidor 1024 bytes de buffer es mas que suficiente ya que solo necesitamos leer la primer linea
                               // de la solicitud HTTP para determinar si es un GET a la ruta raíz ("/") o no. Si la solicitud HTTP es más grande que 1024 bytes, simplemente ignoramos el resto de la solicitud y respondemos con un 404 NOT FOUND.
-                              
+
   if stream.read(&mut buffer).is_err() { // Leemos la solicitud HTTP del cliente y la almacenamos en el buffer. Si ocurre un error al leer la solicitud, imprimimos un mensaje de error y retornamos
     return;
   }
@@ -40,11 +40,15 @@ fn handle_connection(mut stream: TcpStream) { // Recibe un TcpStream mutable. Es
     .unwrap_or_default();
 
   // Si la solicitud HTTP es un GET a la ruta raíz ("/"), entonces respondemos con un código de estado 200 OK y el contenido del archivo index.html. Si la solicitud HTTP es cualquier otra cosa, respondemos con un código de estado 404 NOT FOUND y un mensaje de error en HTML
-  let (status_line, contents) = if request_line == "GET / HTTP/1.1" {
-    ("HTTP/1.1 200 OK", include_str!("../index.html"))
-  } else {
-    ("HTTP/1.1 404 NOT FOUND", "<h1>404 - Page not found</h1>")
-  };
+  // Tambien agregamos nuevo endpoint /sleep que simula una solicitud que tarda 10 segundos en procesarse. Esto nos permite probar el comportamiento del servidor web singlethread, ya que si un cliente hace una solicitud a /sleep, el servidor no puede atender otras solicitudes hasta que termine de procesar la solicitud a /sleep.
+  let (status_line, contents) = match request_line {
+    "GET / HTTP/1.1" => ("HTTP/1.1 200 OK", include_str!("../index.html")),
+    "GET /sleep HTTP/1.1" => {
+      std::thread::sleep(std::time::Duration::from_secs(10));
+      ("HTTP/1.1 200 OK", include_str!("../index.html"))
+    }
+    _ => ("HTTP/1.1 404 NOT FOUND", "<h1>404 - Page not found</h1>")
+  }; 
 
   // Construimos la respuesta HTTP con el código de estado y el contenido
   let response = format!(
